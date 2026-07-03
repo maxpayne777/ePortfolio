@@ -1,0 +1,14 @@
+title: Dalton Young | CS-499 ePortfolio
+description: Computer Science Capstone ePortfolio, Southern New Hampshire University
+theme: minima
+show_excerpts: false
+
+header_pages:
+  - self-assessment.md
+  - code-review.md
+  - enhancement-one.md
+  - enhancement-two.md
+  - enhancement-three.md
+
+plugins:
+  - jekyll-feed
