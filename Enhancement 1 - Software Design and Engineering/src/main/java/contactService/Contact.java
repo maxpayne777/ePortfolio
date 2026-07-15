@@ -10,6 +10,26 @@ package contactService;
  */
 public class Contact {
 	/**
+	 * Maximum allowed length for a contact's ID
+	 */
+	private static final int MAX_ID_LENGTH = 10;
+
+	/**
+	 * Maximum allowed length for a contact's first or last name
+	 */
+	private static final int MAX_NAME_LENGTH = 10;
+
+	/**
+	 * Required length for a contact's phone number
+	 */
+	private static final int PHONE_NUMBER_LENGTH = 10;
+
+	/**
+	 * Maximum allowed length for a contact's address
+	 */
+	private static final int MAX_ADDRESS_LENGTH = 30;
+
+	/**
 	 * A unique ID for the contact
 	 */
 	private String id;
@@ -44,28 +64,17 @@ public class Contact {
 	 * @param address Contact's address. Cannot be null or more than 30 characters
 	 */
 	public Contact(String id, String firstName, String lastName, String phoneNumber, String address) {
-		// Validate the parameters and throw an IllegalArgumentException if they are not valid
-		if(id == null || id.length() > 10) {
+		// id has no setter, since it's immutable after construction, so it's validated here directly
+		if(id == null || id.length() > MAX_ID_LENGTH) {
 			throw new IllegalArgumentException("Invalid ID");
 		}
-		if(firstName == null || firstName.length() > 10) {
-			throw new IllegalArgumentException("Invalid First Name");
-		}
-		if(lastName == null || lastName.length() > 10) {
-			throw new IllegalArgumentException("Invalid Last Name");
-		}
-		if(phoneNumber == null || phoneNumber.length() != 10 || !phoneNumber.matches("[0-9]+")) {
-			throw new IllegalArgumentException("Invalid Phone Number");
-		}
-		if(address == null || address.length() > 30) {
-			throw new IllegalArgumentException("Invalid Address");
-		}
-
 		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phoneNumber = phoneNumber;
-		this.address = address;
+
+		// Delegate to the setters instead of duplicating their validation here
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
+		this.setPhoneNumber(phoneNumber);
+		this.setAddress(address);
 	}
 
 	/**
@@ -119,8 +128,7 @@ public class Contact {
 	 * @param firstName Contact's first name. Cannot be null or more than 10 characters
 	 */
 	public void setFirstName(String firstName) {
-		// Validate firstName and throw an IllegalArgument if it is invalid
-		if(firstName == null || firstName.length() > 10) {
+		if(firstName == null || firstName.length() > MAX_NAME_LENGTH) {
 			throw new IllegalArgumentException("Invalid First Name");
 		}
 
@@ -133,8 +141,7 @@ public class Contact {
 	 * @param lastName Contact's last name. Cannot be null or more than 10 characters
 	 */
 	public void setLastName(String lastName) {
-		// Validate lastName and throw an IllegalArgument if it is invalid
-		if(lastName == null || lastName.length() > 10) {
+		if(lastName == null || lastName.length() > MAX_NAME_LENGTH) {
 			throw new IllegalArgumentException("Invalid Last Name");
 		}
 
@@ -147,8 +154,7 @@ public class Contact {
 	 * @param phoneNumber Contact's phone number. Cannot be null, must be exactly 10 characters, and can only contain the digits 0-9
 	 */
 	public void setPhoneNumber(String phoneNumber) {
-		// Validate phoneNumber and throw an IllegalArgument if it is invalid
-		if(phoneNumber == null || phoneNumber.length() != 10 || !phoneNumber.matches("[0-9]+")) {
+		if(phoneNumber == null || phoneNumber.length() != PHONE_NUMBER_LENGTH || !phoneNumber.matches("[0-9]+")) {
 			throw new IllegalArgumentException("Invalid Phone Number");
 		}
 
@@ -161,8 +167,7 @@ public class Contact {
 	 * @param address Contact's address. Cannot be null or more than 30 characters
 	 */
 	public void setAddress(String address) {
-		// Validate address and throw an IllegalArgument if it is invalid
-		if(address == null || address.length() > 30) {
+		if(address == null || address.length() > MAX_ADDRESS_LENGTH) {
 			throw new IllegalArgumentException("Invalid Address");
 		}
 
