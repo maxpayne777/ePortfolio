@@ -1,6 +1,7 @@
 package contactService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * ContactService stores and manages Contacts. Each contact must have a unique ID
@@ -195,5 +196,42 @@ public class ContactService {
 		}
 
 		return this.contacts.get(index);
+	}
+
+	/**
+	 * Returns all contacts sorted alphabetically by last name, then first name. Sorts a fresh
+	 * copy of the list on every call rather than maintaining a sorted structure.
+	 *
+	 * @return All contacts, sorted by last name and then first name
+	 */
+	public ArrayList<Contact> listAll() {
+		ArrayList<Contact> sorted = new ArrayList<Contact>(this.contacts);
+		sorted.sort(Comparator.comparing(Contact::getLastName).thenComparing(Contact::getFirstName));
+
+		return sorted;
+	}
+
+	/**
+	 * Finds every contact whose full name (first name and last name combined) contains
+	 * the given text. Matching is case-insensitive and by substring, so a partial name,
+	 * just a first name or just a last name, still finds matches.
+	 *
+	 * @param name Text to search for within each contact's full name
+	 * @return All contacts whose full name contains that text, or an empty list if none match
+	 */
+	public ArrayList<Contact> searchByName(String name) {
+		ArrayList<Contact> matches = new ArrayList<Contact>();
+
+		// Linear scan checking each contact's combined first and last name for the query, case-insensitively
+		for (int i = 0; i < this.contacts.size(); i++) {
+			Contact contact = this.contacts.get(i);
+			String fullName = contact.getFirstName() + " " + contact.getLastName();
+
+			if (fullName.toLowerCase().contains(name.toLowerCase())) {
+				matches.add(contact);
+			}
+		}
+
+		return matches;
 	}
 }

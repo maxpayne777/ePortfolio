@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import contactService.Contact;
 import contactService.ContactService;
 
@@ -156,6 +158,90 @@ class ContactServiceTest {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			service.updateAddress("0005", "100 1st Street, New York, New York 10002");
 		});
+	}
+
+	@Test
+	@DisplayName("Test that listAll returns contacts sorted by last name")
+	void testListAllSortedByLastName() {
+		Contact contact1 = new Contact("0001", "John", "Zimmerman", "5731234567", "11 Broadway St, Springfield MO");
+		Contact contact2 = new Contact("0002", "Cheyenne", "Adams", "5731234567", "123 Lauren Ln, Naylor MO");
+
+		service.addContact(contact1);
+		service.addContact(contact2);
+
+		ArrayList<Contact> all = service.listAll();
+
+		Assertions.assertEquals("Adams", all.get(0).getLastName());
+		Assertions.assertEquals("Zimmerman", all.get(1).getLastName());
+	}
+
+	@Test
+	@DisplayName("Test that searchByName finds a contact by full name, case-insensitively")
+	void testSearchByNameFindsContact() {
+		Contact contact = new Contact("0001", "John", "Smith", "5731234567", "11 Broadway St, Springfield MO");
+		service.addContact(contact);
+
+		ArrayList<Contact> matches = service.searchByName("john smith");
+
+		Assertions.assertEquals(1, matches.size());
+		Assertions.assertEquals(contact, matches.get(0));
+	}
+
+	@Test
+	@DisplayName("Test that searchByName excludes contacts that don't match the query")
+	void testSearchByNameExcludesNonMatches() {
+		Contact match = new Contact("0001", "John", "Smith", "5731234567", "11 Broadway St, Springfield MO");
+		Contact nonMatch = new Contact("0002", "Jane", "Doe", "4171234567", "123 Lauren Ln, Naylor MO");
+
+		service.addContact(match);
+		service.addContact(nonMatch);
+
+		ArrayList<Contact> matches = service.searchByName("John Smith");
+
+		Assertions.assertEquals(1, matches.size());
+		Assertions.assertTrue(matches.contains(match));
+	}
+
+	@Test
+	@DisplayName("Test that searchByName matches on a partial name")
+	void testSearchByNamePartialMatch() {
+		Contact contact1 = new Contact("0001", "Dalton", "Young", "5731234567", "11 Broadway St, Springfield MO");
+		Contact contact2 = new Contact("0002", "Dalton", "Smith", "4171234567", "123 Lauren Ln, Naylor MO");
+		Contact nonMatch = new Contact("0003", "Jane", "Doe", "3141234567", "1 Main St, Anytown MO");
+
+		service.addContact(contact1);
+		service.addContact(contact2);
+		service.addContact(nonMatch);
+
+		ArrayList<Contact> matches = service.searchByName("Dalton");
+
+		Assertions.assertEquals(2, matches.size());
+		Assertions.assertTrue(matches.contains(contact1));
+		Assertions.assertTrue(matches.contains(contact2));
+	}
+
+	@Test
+	@DisplayName("Test that searchByName returns every contact sharing the same full name")
+	void testSearchByNameFindsMultipleMatches() {
+		Contact contact1 = new Contact("0001", "John", "Smith", "5731234567", "11 Broadway St, Springfield MO");
+		Contact contact2 = new Contact("0002", "John", "Smith", "4171234567", "123 Lauren Ln, Naylor MO");
+
+		service.addContact(contact1);
+		service.addContact(contact2);
+
+		ArrayList<Contact> matches = service.searchByName("John Smith");
+
+		Assertions.assertEquals(2, matches.size());
+		Assertions.assertTrue(matches.contains(contact1));
+		Assertions.assertTrue(matches.contains(contact2));
+	}
+
+	@Test
+	@DisplayName("Test that searchByName returns an empty list when nothing matches")
+	void testSearchByNameNotFound() {
+		ArrayList<Contact> matches = service.searchByName("Nobody Special");
+
+		Assertions.assertTrue(matches.isEmpty());
 	}
 
 }
