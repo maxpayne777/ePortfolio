@@ -28,6 +28,24 @@ class ContactServiceTest {
 	}
 
 	@Test
+	@DisplayName("Test that addContact generates sequential IDs when the caller does not supply one")
+	void testAddContactGeneratesSequentialIds() {
+		service.addContact("John", "Smith", "5731234567", "11 Broadway St, Springfield MO");
+		service.addContact("Cheyenne", "Miller", "5731234567", "123 Lauren Ln, Naylor MO");
+
+		Assertions.assertEquals("John", service.getContact("1").getFirstName());
+		Assertions.assertEquals("Cheyenne", service.getContact("2").getFirstName());
+	}
+
+	@Test
+	@DisplayName("Test that the generated-ID addContact still validates its fields")
+	void testAddContactGeneratedIdValidatesFields() {
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			service.addContact("John", "Smith", "not-a-phone", "11 Broadway St, Springfield MO");
+		});
+	}
+
+	@Test
 	@DisplayName("Test that an exception is thrown when we try to add two Contacts with the same ID")
 	void testAddContactIdNotUnique() {
 		Contact contact1 = new Contact("0001", "John", "Smith", "5731234567", "11 Broadway St, Springfield MO");

@@ -15,10 +15,16 @@ public class ContactService {
 	private ArrayList<Contact> contacts;
 
 	/**
+	 * Counter used by generateNextId() to assign IDs to contacts added without one
+	 */
+	private int nextId;
+
+	/**
 	 * Initialize a new instance
 	 */
 	public ContactService() {
 		this.contacts = new ArrayList<Contact>();
+		this.nextId = 1;
 	}
 
 	/**
@@ -57,6 +63,31 @@ public class ContactService {
 		}
 
 		this.contacts.add(newContact);
+	}
+
+	/**
+	 * Generates the next contact ID from an internal counter
+	 *
+	 * @return The next available ID
+	 */
+	private String generateNextId() {
+		return String.valueOf(this.nextId++);
+	}
+
+	/**
+	 * Adds a new contact, generating its ID internally instead of requiring the caller to supply one.
+	 * This corrects a design flaw in addContact(Contact), where the caller effectively had to choose
+	 * its own primary key with no way to know what ID was actually safe to use. addContact(Contact)
+	 * is left in place since it's still a legitimate lower-level API, and existing callers rely on it.
+	 *
+	 * @param firstName Contact's first name. Cannot be null or more than 10 characters
+	 * @param lastName Contact's last name. Cannot be null or more than 10 characters
+	 * @param phoneNumber Contact's phone number. Cannot be null, must be exactly 10 characters, and can only contain the digits 0-9
+	 * @param address Contact's address. Cannot be null or more than 30 characters
+	 */
+	public void addContact(String firstName, String lastName, String phoneNumber, String address) {
+		Contact newContact = new Contact(this.generateNextId(), firstName, lastName, phoneNumber, address);
+		this.addContact(newContact);
 	}
 
 	/**
