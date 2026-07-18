@@ -15,19 +15,22 @@ public class Contact {
 	private static final int MAX_ID_LENGTH = 10;
 
 	/**
-	 * Maximum allowed length for a contact's first or last name
+	 * Maximum allowed length for a contact's first or last name. Public so callers (such
+	 * as ContactApp) can display the limit without duplicating it as a separate literal.
 	 */
-	private static final int MAX_NAME_LENGTH = 10;
+	public static final int MAX_NAME_LENGTH = 10;
 
 	/**
-	 * Required length for a contact's phone number
+	 * Required length for a contact's phone number. Public so callers (such as
+	 * ContactApp) can display the limit without duplicating it as a separate literal.
 	 */
-	private static final int PHONE_NUMBER_LENGTH = 10;
+	public static final int PHONE_NUMBER_LENGTH = 10;
 
 	/**
-	 * Maximum allowed length for a contact's address
+	 * Maximum allowed length for a contact's address. Public so callers (such as
+	 * ContactApp) can display the limit without duplicating it as a separate literal.
 	 */
-	private static final int MAX_ADDRESS_LENGTH = 30;
+	public static final int MAX_ADDRESS_LENGTH = 30;
 
 	/**
 	 * A unique ID for the contact
